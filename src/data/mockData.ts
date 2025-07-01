@@ -1,4 +1,3 @@
-
 import { ClassSpace, DailySheet, SheetRow, SheetEntry, ChatMessage, User } from '@/types';
 
 export const mockUsers: User[] = [
@@ -6,25 +5,21 @@ export const mockUsers: User[] = [
     id: 'instructor_1',
     phone: '010-1234-5678',
     name: '김지훈',
-    role: 'instructor',
   },
   {
     id: 'student_1',
     phone: '010-2345-6789',
     name: '박소연',
-    role: 'student',
   },
   {
     id: 'student_2',
     phone: '010-3456-7890',
     name: '이민준',
-    role: 'student',
   },
   {
     id: 'student_3',
     phone: '010-4567-8901',
     name: '정하은',
-    role: 'student',
   },
 ];
 

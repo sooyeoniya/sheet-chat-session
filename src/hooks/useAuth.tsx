@@ -1,9 +1,9 @@
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, AuthState } from '@/types';
 
 interface AuthContextType extends AuthState {
-  login: (phone: string, name: string, role: 'instructor' | 'student') => void;
+  login: (phone: string, name: string) => void;
   logout: () => void;
 }
 
@@ -15,12 +15,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: false,
   });
 
-  const login = (phone: string, name: string, role: 'instructor' | 'student') => {
+  const login = (phone: string, name: string) => {
     const user: User = {
       id: `user_${Date.now()}`,
       phone,
       name,
-      role,
     };
     
     setAuthState({
@@ -40,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // 페이지 로드 시 인증 상태 복원
-  useState(() => {
+  useEffect(() => {
     const stored = localStorage.getItem('auth');
     if (stored) {
       const user = JSON.parse(stored);
@@ -49,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: true,
       });
     }
-  });
+  }, []);
 
   return (
     <AuthContext.Provider value={{ ...authState, login, logout }}>

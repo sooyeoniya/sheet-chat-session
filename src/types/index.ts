@@ -3,7 +3,6 @@ export interface User {
   id: string;
   phone: string;
   name: string;
-  role: 'instructor' | 'student';
   avatar?: string;
 }
 

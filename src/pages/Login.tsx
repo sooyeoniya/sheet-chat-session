@@ -1,5 +1,4 @@
 
-import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -7,12 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface LoginForm {
   phone: string;
   name: string;
-  role: 'instructor' | 'student';
 }
 
 export default function Login() {
@@ -24,7 +21,7 @@ export default function Login() {
   }
 
   const onSubmit = (data: LoginForm) => {
-    login(data.phone, data.name, data.role);
+    login(data.phone, data.name);
   };
 
   return (
@@ -67,28 +64,6 @@ export default function Login() {
               {errors.name && (
                 <p className="text-sm text-destructive">{errors.name.message}</p>
               )}
-            </div>
-
-            <div className="space-y-2">
-              <Label>역할</Label>
-              <RadioGroup defaultValue="student" className="flex gap-4">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem 
-                    value="student" 
-                    id="student"
-                    {...register('role')}
-                  />
-                  <Label htmlFor="student">수강생</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem 
-                    value="instructor" 
-                    id="instructor"
-                    {...register('role')}
-                  />
-                  <Label htmlFor="instructor">멘토</Label>
-                </div>
-              </RadioGroup>
             </div>
 
             <Button type="submit" className="w-full">
