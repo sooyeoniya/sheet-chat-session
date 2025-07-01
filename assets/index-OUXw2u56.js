@@ -19094,7 +19094,11 @@ const CardFooter = reactExports.forwardRef(({ className, ...props }, ref) => /* 
 CardFooter.displayName = "CardFooter";
 function Login() {
   const { isAuthenticated, login } = useAuth();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm();
   if (isAuthenticated) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/dashboard", replace: true });
   }
@@ -19193,10 +19197,34 @@ const mockDailySheets = [
     date: "2024-07-01",
     title: "1주차 1일차 - 오리엔테이션",
     rows: [
-      { id: "row_1", title: "체크인 점수 (1-10)", isPublic: true, order: 1, type: "checkin" },
-      { id: "row_2", title: "오늘의 목표", isPublic: true, order: 2, type: "text" },
-      { id: "row_3", title: "궁금한 점", isPublic: true, order: 3, type: "question" },
-      { id: "row_4", title: "토론: 최고의 학습 방법은?", isPublic: false, order: 4, type: "discussion" }
+      {
+        id: "row_1",
+        title: "체크인 점수 (1-10)",
+        isPublic: true,
+        order: 1,
+        type: "checkin"
+      },
+      {
+        id: "row_2",
+        title: "오늘의 목표",
+        isPublic: true,
+        order: 2,
+        type: "text"
+      },
+      {
+        id: "row_3",
+        title: "궁금한 점",
+        isPublic: true,
+        order: 3,
+        type: "question"
+      },
+      {
+        id: "row_4",
+        title: "토론: 최고의 학습 방법은?",
+        isPublic: false,
+        order: 4,
+        type: "discussion"
+      }
     ],
     createdAt: "2024-07-01T09:00:00Z"
   },
@@ -19206,9 +19234,27 @@ const mockDailySheets = [
     date: "2024-07-02",
     title: "1주차 2일차 - 기초 이론",
     rows: [
-      { id: "row_5", title: "체크인 점수 (1-10)", isPublic: true, order: 1, type: "checkin" },
-      { id: "row_6", title: "어제 학습한 내용 정리", isPublic: true, order: 2, type: "text" },
-      { id: "row_7", title: "오늘의 어려운 점", isPublic: true, order: 3, type: "question" }
+      {
+        id: "row_5",
+        title: "체크인 점수 (1-10)",
+        isPublic: true,
+        order: 1,
+        type: "checkin"
+      },
+      {
+        id: "row_6",
+        title: "어제 학습한 내용 정리",
+        isPublic: true,
+        order: 2,
+        type: "text"
+      },
+      {
+        id: "row_7",
+        title: "오늘의 어려운 점",
+        isPublic: true,
+        order: 3,
+        type: "question"
+      }
     ],
     createdAt: "2024-07-02T09:00:00Z"
   }
@@ -20734,8 +20780,16 @@ function CreateClassSpaceDialog({
     ] })
   ] }) });
 }
-function JoinClassSpaceDialog({ open, onOpenChange }) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+function JoinClassSpaceDialog({
+  open,
+  onOpenChange
+}) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm();
   const { toast: toast2 } = useToast();
   const onSubmit = (data) => {
     console.log("수업 참여 시도:", data);
@@ -20772,7 +20826,15 @@ function JoinClassSpaceDialog({ open, onOpenChange }) {
         errors.inviteCode && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-destructive", children: errors.inviteCode.message })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", variant: "outline", onClick: () => onOpenChange(false), children: "취소" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            type: "button",
+            variant: "outline",
+            onClick: () => onOpenChange(false),
+            children: "취소"
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", children: "참여하기" })
       ] })
     ] })
@@ -20783,8 +20845,12 @@ function Dashboard() {
   const [createDialogOpen, setCreateDialogOpen] = reactExports.useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = reactExports.useState(false);
   if (!user) return null;
-  const myInstructorClasses = mockClassSpaces.filter((cs) => cs.instructorId === user.id);
-  const myStudentClasses = mockClassSpaces.filter((cs) => cs.students.includes(user.id));
+  const myInstructorClasses = mockClassSpaces.filter(
+    (cs) => cs.instructorId === user.id
+  );
+  const myStudentClasses = mockClassSpaces.filter(
+    (cs) => cs.students.includes(user.id)
+  );
   const allMyClasses = [...myInstructorClasses, ...myStudentClasses];
   const getInstructorName = (instructorId) => {
     const instructor = mockUsers.find((u2) => u2.id === instructorId);
@@ -20824,39 +20890,53 @@ function Dashboard() {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: allMyClasses.map((classSpace) => {
         const userRole = getUserRole(classSpace);
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "hover:shadow-lg transition-shadow", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center justify-between", children: [
-              classSpace.name,
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs px-2 py-1 rounded-full ${userRole === "instructor" ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800"}`, children: userRole === "instructor" ? "멘토" : "수강생" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-5 h-5 text-muted-foreground" })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: userRole === "student" && `멘토: ${getInstructorName(classSpace.instructorId)}` })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 text-sm text-muted-foreground mb-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "w-4 h-4 mr-2" }),
-                classSpace.startDate,
-                " ~ ",
-                classSpace.endDate
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Card,
+          {
+            className: "hover:shadow-lg transition-shadow",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center justify-between", children: [
+                  classSpace.name,
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "span",
+                      {
+                        className: `text-xs px-2 py-1 rounded-full ${userRole === "instructor" ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800"}`,
+                        children: userRole === "instructor" ? "멘토" : "수강생"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-5 h-5 text-muted-foreground" })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: userRole === "student" && `멘토: ${getInstructorName(classSpace.instructorId)}` })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-4 h-4 mr-2" }),
-                "수강생 ",
-                classSpace.students.length,
-                "명"
-              ] }),
-              userRole === "instructor" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs bg-muted p-2 rounded", children: [
-                "초대 코드: ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "font-mono", children: classSpace.inviteCode })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 text-sm text-muted-foreground mb-4", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "w-4 h-4 mr-2" }),
+                    classSpace.startDate,
+                    " ~ ",
+                    classSpace.endDate
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-4 h-4 mr-2" }),
+                    "수강생 ",
+                    classSpace.students.length,
+                    "명"
+                  ] }),
+                  userRole === "instructor" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs bg-muted p-2 rounded", children: [
+                    "초대 코드:",
+                    " ",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "font-mono", children: classSpace.inviteCode })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/class/${classSpace.id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { className: "w-full", children: "수업 공간 입장" }) })
               ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/class/${classSpace.id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { className: "w-full", children: "수업 공간 입장" }) })
-          ] })
-        ] }, classSpace.id);
+            ]
+          },
+          classSpace.id
+        );
       }) }),
       allMyClasses.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground mb-4", children: "참여 중인 수업이 없습니다." }),
@@ -20888,8 +20968,17 @@ function Dashboard() {
     )
   ] });
 }
-function CreateDailySheetDialog({ open, onOpenChange, classSpaceId }) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+function CreateDailySheetDialog({
+  open,
+  onOpenChange,
+  classSpaceId
+}) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm();
   const { toast: toast2 } = useToast();
   const onSubmit = (data) => {
     console.log("새 데일리 시트 생성:", { ...data, classSpaceId });
@@ -20931,7 +21020,15 @@ function CreateDailySheetDialog({ open, onOpenChange, classSpaceId }) {
         errors.date && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-destructive", children: errors.date.message })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", variant: "outline", onClick: () => onOpenChange(false), children: "취소" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            type: "button",
+            variant: "outline",
+            onClick: () => onOpenChange(false),
+            children: "취소"
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", children: "만들기" })
       ] })
     ] })
@@ -20942,7 +21039,9 @@ function ClassSpace() {
   const { user } = useAuth();
   const [createSheetOpen, setCreateSheetOpen] = reactExports.useState(false);
   const classSpace = mockClassSpaces.find((cs) => cs.id === classId);
-  const dailySheets = mockDailySheets.filter((ds) => ds.classSpaceId === classId);
+  const dailySheets = mockDailySheets.filter(
+    (ds) => ds.classSpaceId === classId
+  );
   if (!classSpace) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold mb-4", children: "수업을 찾을 수 없습니다" }),
@@ -20965,7 +21064,8 @@ function ClassSpace() {
             instructor == null ? void 0 : instructor.name,
             " | ",
             classSpace.startDate,
-            " ~ ",
+            " ~",
+            " ",
             classSpace.endDate
           ] })
         ] }),
@@ -20978,30 +21078,40 @@ function ClassSpace() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "lg:col-span-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold mb-4", children: "데일리 시트" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: dailySheets.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((sheet) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "hover:shadow-lg transition-shadow", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center justify-between", children: [
-              sheet.title,
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "w-5 h-5 text-muted-foreground" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: new Date(sheet.date).toLocaleDateString("ko-KR", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              weekday: "long"
-            }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
-              "주제 ",
-              sheet.rows.length,
-              "개 • 공개된 주제 ",
-              sheet.rows.filter((r2) => r2.isPublic).length,
-              "개"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/class/${classId}/sheet/${sheet.id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { className: "w-full", children: "시트 열기" }) })
-          ] })
-        ] }, sheet.id)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: dailySheets.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        ).map((sheet) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Card,
+          {
+            className: "hover:shadow-lg transition-shadow",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center justify-between", children: [
+                  sheet.title,
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "w-5 h-5 text-muted-foreground" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: new Date(sheet.date).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  weekday: "long"
+                }) })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+                  "주제 ",
+                  sheet.rows.length,
+                  "개 • 공개된 주제",
+                  " ",
+                  sheet.rows.filter((r2) => r2.isPublic).length,
+                  "개"
+                ] }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/class/${classId}/sheet/${sheet.id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { className: "w-full", children: "시트 열기" }) })
+              ] })
+            ]
+          },
+          sheet.id
+        )) }),
         dailySheets.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground mb-4", children: "아직 생성된 데일리 시트가 없습니다." }),
           isInstructor && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => setCreateSheetOpen(true), children: [
@@ -21019,8 +21129,17 @@ function ClassSpace() {
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-medium mb-2", children: "참여 학생" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: classSpace.students.map((studentId) => {
-              const student = mockUsers.find((u2) => u2.id === studentId);
-              return student ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-muted-foreground", children: student.name }, studentId) : null;
+              const student = mockUsers.find(
+                (u2) => u2.id === studentId
+              );
+              return student ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "text-sm text-muted-foreground",
+                  children: student.name
+                },
+                studentId
+              ) : null;
             }) })
           ] }),
           isInstructor && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -21131,7 +21250,13 @@ const Textarea = reactExports.forwardRef(
   }
 );
 Textarea.displayName = "Textarea";
-function SheetTable({ dailySheet, students, entries, currentUser, isInstructor }) {
+function SheetTable({
+  dailySheet,
+  students,
+  entries,
+  currentUser,
+  isInstructor
+}) {
   const [editingCell, setEditingCell] = reactExports.useState(null);
   const [editContent, setEditContent] = reactExports.useState("");
   const { toast: toast2 } = useToast();
@@ -22026,7 +22151,11 @@ const ScrollBar = reactExports.forwardRef(({ className, orientation = "vertical"
   }
 ));
 ScrollBar.displayName = ScrollAreaScrollbar.displayName;
-function ChatPanel({ classSpaceId, messages, currentUser }) {
+function ChatPanel({
+  classSpaceId,
+  messages,
+  currentUser
+}) {
   const [newMessage, setNewMessage] = reactExports.useState("");
   const scrollRef = reactExports.useRef(null);
   const handleSendMessage = (e) => {
@@ -23827,8 +23956,19 @@ const Switch = reactExports.forwardRef(({ className, ...props }, ref) => /* @__P
   }
 ));
 Switch.displayName = Root.displayName;
-function AddRowDialog({ open, onOpenChange, dailySheetId }) {
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
+function AddRowDialog({
+  open,
+  onOpenChange,
+  dailySheetId
+}) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useForm({
     defaultValues: {
       isPublic: true,
       type: "text"
@@ -23870,10 +24010,16 @@ function AddRowDialog({ open, onOpenChange, dailySheetId }) {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "type", children: "주제 유형" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { onValueChange: (value) => setValue("type", value), children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "주제 유형을 선택하세요" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: Object.entries(typeLabels).map(([value, label]) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value, children: label }, value)) })
-        ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Select,
+          {
+            onValueChange: (value) => setValue("type", value),
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "주제 유형을 선택하세요" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: Object.entries(typeLabels).map(([value, label]) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value, children: label }, value)) })
+            ]
+          }
+        )
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -23887,7 +24033,15 @@ function AddRowDialog({ open, onOpenChange, dailySheetId }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "isPublic", children: "즉시 공개 (체크 해제 시 수업 중 공개 가능)" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", variant: "outline", onClick: () => onOpenChange(false), children: "취소" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            type: "button",
+            variant: "outline",
+            onClick: () => onOpenChange(false),
+            children: "취소"
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", children: "추가하기" })
       ] })
     ] })
@@ -23920,22 +24074,16 @@ function DailySheet() {
           /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold", children: dailySheet.title }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-muted-foreground", children: [
             classSpace.name,
-            " • ",
+            " •",
+            " ",
             new Date(dailySheet.date).toLocaleDateString("ko-KR")
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            Button,
-            {
-              variant: "outline",
-              onClick: () => setChatOpen(!chatOpen),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(MessageSquare, { className: "w-4 h-4 mr-2" }),
-                chatOpen ? "채팅 숨기기" : "채팅 보기"
-              ]
-            }
-          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "outline", onClick: () => setChatOpen(!chatOpen), children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(MessageSquare, { className: "w-4 h-4 mr-2" }),
+            chatOpen ? "채팅 숨기기" : "채팅 보기"
+          ] }),
           isInstructor && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => setAddRowOpen(true), children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2" }),
             "주제 추가"
@@ -23944,21 +24092,29 @@ function DailySheet() {
       ] })
     ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "flex h-[calc(100vh-120px)]", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex-1 ${chatOpen ? "pr-80" : ""} transition-all duration-300`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 h-full overflow-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        SheetTable,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
         {
-          dailySheet,
-          students,
-          entries,
-          currentUser: user,
-          isInstructor
+          className: `flex-1 ${chatOpen ? "pr-80" : ""} transition-all duration-300`,
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 h-full overflow-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            SheetTable,
+            {
+              dailySheet,
+              students,
+              entries,
+              currentUser: user,
+              isInstructor
+            }
+          ) })
         }
-      ) }) }),
+      ),
       chatOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed right-0 top-[120px] w-80 h-[calc(100vh-120px)] border-l bg-white", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         ChatPanel,
         {
           classSpaceId: classId,
-          messages: mockChatMessages.filter((m2) => m2.classSpaceId === classId),
+          messages: mockChatMessages.filter(
+            (m2) => m2.classSpaceId === classId
+          ),
           currentUser: user
         }
       ) })
