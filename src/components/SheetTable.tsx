@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DailySheet, User, SheetEntry } from "@/types";
 import { Eye, EyeOff, Edit, Save, X } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 
 interface SheetTableProps {
   dailySheet: DailySheet;
