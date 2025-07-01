@@ -17421,6 +17421,171 @@ function useLinkClickHandler(to, _temp) {
     }
   }, [location, navigate, path, replaceProp, state, target, to, preventScrollReset, relative, viewTransition]);
 }
+const mockUsers = [
+  {
+    id: "instructor_1",
+    phone: "010-1234-5678",
+    name: "김지훈"
+  },
+  {
+    id: "student_1",
+    phone: "010-2345-6789",
+    name: "박소연"
+  },
+  {
+    id: "student_2",
+    phone: "010-3456-7890",
+    name: "이민준"
+  },
+  {
+    id: "student_3",
+    phone: "010-4567-8901",
+    name: "정하은"
+  }
+];
+const mockClassSpaces = [
+  {
+    id: "class_1",
+    name: "레벨 1",
+    instructorId: "instructor_1",
+    startDate: "2024-07-01",
+    endDate: "2024-07-31",
+    inviteCode: "LEVEL1ABC",
+    students: ["student_1", "student_2", "student_3"],
+    createdAt: "2024-07-01T09:00:00Z"
+  },
+  {
+    id: "class_2",
+    name: "레벨 2",
+    instructorId: "instructor_1",
+    startDate: "2024-08-01",
+    endDate: "2024-08-31",
+    inviteCode: "LEVEL2DEF",
+    students: ["student_1", "student_2"],
+    createdAt: "2024-08-01T09:00:00Z"
+  }
+];
+const mockDailySheets = [
+  {
+    id: "sheet_1",
+    classSpaceId: "class_1",
+    date: "2024-07-01",
+    title: "1주차 1일차 - 오리엔테이션",
+    rows: [
+      {
+        id: "row_1",
+        title: "체크인 점수 (1-10)",
+        isPublic: true,
+        order: 1,
+        type: "checkin"
+      },
+      {
+        id: "row_2",
+        title: "오늘의 목표",
+        isPublic: true,
+        order: 2,
+        type: "text"
+      },
+      {
+        id: "row_3",
+        title: "궁금한 점",
+        isPublic: true,
+        order: 3,
+        type: "question"
+      },
+      {
+        id: "row_4",
+        title: "토론: 최고의 학습 방법은?",
+        isPublic: false,
+        order: 4,
+        type: "discussion"
+      }
+    ],
+    createdAt: "2024-07-01T09:00:00Z"
+  },
+  {
+    id: "sheet_2",
+    classSpaceId: "class_1",
+    date: "2024-07-02",
+    title: "1주차 2일차 - 기초 이론",
+    rows: [
+      {
+        id: "row_5",
+        title: "체크인 점수 (1-10)",
+        isPublic: true,
+        order: 1,
+        type: "checkin"
+      },
+      {
+        id: "row_6",
+        title: "어제 학습한 내용 정리",
+        isPublic: true,
+        order: 2,
+        type: "text"
+      },
+      {
+        id: "row_7",
+        title: "오늘의 어려운 점",
+        isPublic: true,
+        order: 3,
+        type: "question"
+      }
+    ],
+    createdAt: "2024-07-02T09:00:00Z"
+  }
+];
+const mockSheetEntries = [
+  {
+    id: "entry_1",
+    dailySheetId: "sheet_1",
+    rowId: "row_1",
+    userId: "student_1",
+    content: "8",
+    createdAt: "2024-07-01T10:00:00Z",
+    updatedAt: "2024-07-01T10:00:00Z"
+  },
+  {
+    id: "entry_2",
+    dailySheetId: "sheet_1",
+    rowId: "row_1",
+    userId: "student_2",
+    content: "7",
+    createdAt: "2024-07-01T10:01:00Z",
+    updatedAt: "2024-07-01T10:01:00Z"
+  },
+  {
+    id: "entry_3",
+    dailySheetId: "sheet_1",
+    rowId: "row_2",
+    userId: "student_1",
+    content: "React의 기초를 확실히 이해하기",
+    createdAt: "2024-07-01T10:05:00Z",
+    updatedAt: "2024-07-01T10:05:00Z"
+  }
+];
+const mockChatMessages = [
+  {
+    id: "msg_1",
+    classSpaceId: "class_1",
+    userId: "instructor_1",
+    content: "오늘 수업을 시작하겠습니다! 체크인 점수부터 입력해주세요.",
+    createdAt: "2024-07-01T09:30:00Z"
+  },
+  {
+    id: "msg_2",
+    classSpaceId: "class_1",
+    userId: "student_1",
+    content: "안녕하세요! 잘 부탁드립니다.",
+    createdAt: "2024-07-01T09:31:00Z"
+  },
+  {
+    id: "msg_3",
+    classSpaceId: "class_1",
+    userId: "student_2",
+    content: "체크인 점수 입력 완료했습니다!",
+    createdAt: "2024-07-01T09:35:00Z"
+  }
+];
 const AuthContext = reactExports.createContext(void 0);
 function AuthProvider({ children }) {
   const [authState, setAuthState] = reactExports.useState({
@@ -17428,16 +17593,18 @@ function AuthProvider({ children }) {
     isAuthenticated: false
   });
   const login = (phone, name) => {
-    const user = {
-      id: `user_${Date.now()}`,
-      phone,
-      name
-    };
+    const existingUser = mockUsers.find((user) => user.phone === phone);
+    if (!existingUser) {
+      throw new Error("등록되지 않은 사용자입니다.");
+    }
+    if (existingUser.name !== name) {
+      throw new Error("이름이 일치하지 않습니다.");
+    }
     setAuthState({
-      user,
+      user: existingUser,
       isAuthenticated: true
     });
-    localStorage.setItem("auth", JSON.stringify(user));
+    localStorage.setItem("auth", JSON.stringify(existingUser));
   };
   const logout = () => {
     setAuthState({
@@ -19092,8 +19259,51 @@ const CardFooter = reactExports.forwardRef(({ className, ...props }, ref) => /* 
   }
 ));
 CardFooter.displayName = "CardFooter";
+const alertVariants = cva(
+  "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
+  {
+    variants: {
+      variant: {
+        default: "bg-background text-foreground",
+        destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+);
+const Alert = reactExports.forwardRef(({ className, variant, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  "div",
+  {
+    ref,
+    role: "alert",
+    className: cn(alertVariants({ variant }), className),
+    ...props
+  }
+));
+Alert.displayName = "Alert";
+const AlertTitle = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  "h5",
+  {
+    ref,
+    className: cn("mb-1 font-medium leading-none tracking-tight", className),
+    ...props
+  }
+));
+AlertTitle.displayName = "AlertTitle";
+const AlertDescription = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  "div",
+  {
+    ref,
+    className: cn("text-sm [&_p]:leading-relaxed", className),
+    ...props
+  }
+));
+AlertDescription.displayName = "AlertDescription";
 function Login() {
   const { isAuthenticated, login } = useAuth();
+  const [loginError, setLoginError] = reactExports.useState(null);
   const {
     register,
     handleSubmit,
@@ -19103,214 +19313,59 @@ function Login() {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/dashboard", replace: true });
   }
   const onSubmit = (data) => {
-    login(data.phone, data.name);
+    try {
+      setLoginError(null);
+      login(data.phone, data.name);
+    } catch (error) {
+      setLoginError(
+        error instanceof Error ? error.message : "로그인 중 오류가 발생했습니다."
+      );
+    }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen flex items-center justify-center bg-background px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "w-full max-w-md", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-2xl", children: "실시간 수업 플랫폼" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "전화번호로 간편하게 로그인하세요" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "phone", children: "전화번호" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Input,
-          {
-            id: "phone",
-            type: "tel",
-            placeholder: "010-1234-5678",
-            ...register("phone", {
-              required: "전화번호를 입력해주세요",
-              pattern: {
-                value: /^010-\d{4}-\d{4}$/,
-                message: "010-0000-0000 형식으로 입력해주세요"
-              }
-            })
-          }
-        ),
-        errors.phone && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-destructive", children: errors.phone.message })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "name", children: "이름" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Input,
-          {
-            id: "name",
-            placeholder: "홍길동",
-            ...register("name", { required: "이름을 입력해주세요" })
-          }
-        ),
-        errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-destructive", children: errors.name.message })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", className: "w-full", children: "로그인" })
-    ] }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+      loginError && /* @__PURE__ */ jsxRuntimeExports.jsx(Alert, { className: "mb-4", variant: "destructive", children: /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDescription, { children: loginError }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: "space-y-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "phone", children: "전화번호" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Input,
+            {
+              id: "phone",
+              type: "tel",
+              placeholder: "010-1234-5678",
+              ...register("phone", {
+                required: "전화번호를 입력해주세요",
+                pattern: {
+                  value: /^010-\d{4}-\d{4}$/,
+                  message: "010-0000-0000 형식으로 입력해주세요"
+                }
+              })
+            }
+          ),
+          errors.phone && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-destructive", children: errors.phone.message })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "name", children: "이름" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Input,
+            {
+              id: "name",
+              placeholder: "홍길동",
+              ...register("name", { required: "이름을 입력해주세요" })
+            }
+          ),
+          errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-destructive", children: errors.name.message })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", className: "w-full", children: "로그인" })
+      ] })
+    ] })
   ] }) });
 }
-const mockUsers = [
-  {
-    id: "instructor_1",
-    phone: "010-1234-5678",
-    name: "김지훈"
-  },
-  {
-    id: "student_1",
-    phone: "010-2345-6789",
-    name: "박소연"
-  },
-  {
-    id: "student_2",
-    phone: "010-3456-7890",
-    name: "이민준"
-  },
-  {
-    id: "student_3",
-    phone: "010-4567-8901",
-    name: "정하은"
-  }
-];
-const mockClassSpaces = [
-  {
-    id: "class_1",
-    name: "레벨 1",
-    instructorId: "instructor_1",
-    startDate: "2024-07-01",
-    endDate: "2024-07-31",
-    inviteCode: "LEVEL1ABC",
-    students: ["student_1", "student_2", "student_3"],
-    createdAt: "2024-07-01T09:00:00Z"
-  },
-  {
-    id: "class_2",
-    name: "레벨 2",
-    instructorId: "instructor_1",
-    startDate: "2024-08-01",
-    endDate: "2024-08-31",
-    inviteCode: "LEVEL2DEF",
-    students: ["student_1", "student_2"],
-    createdAt: "2024-08-01T09:00:00Z"
-  }
-];
-const mockDailySheets = [
-  {
-    id: "sheet_1",
-    classSpaceId: "class_1",
-    date: "2024-07-01",
-    title: "1주차 1일차 - 오리엔테이션",
-    rows: [
-      {
-        id: "row_1",
-        title: "체크인 점수 (1-10)",
-        isPublic: true,
-        order: 1,
-        type: "checkin"
-      },
-      {
-        id: "row_2",
-        title: "오늘의 목표",
-        isPublic: true,
-        order: 2,
-        type: "text"
-      },
-      {
-        id: "row_3",
-        title: "궁금한 점",
-        isPublic: true,
-        order: 3,
-        type: "question"
-      },
-      {
-        id: "row_4",
-        title: "토론: 최고의 학습 방법은?",
-        isPublic: false,
-        order: 4,
-        type: "discussion"
-      }
-    ],
-    createdAt: "2024-07-01T09:00:00Z"
-  },
-  {
-    id: "sheet_2",
-    classSpaceId: "class_1",
-    date: "2024-07-02",
-    title: "1주차 2일차 - 기초 이론",
-    rows: [
-      {
-        id: "row_5",
-        title: "체크인 점수 (1-10)",
-        isPublic: true,
-        order: 1,
-        type: "checkin"
-      },
-      {
-        id: "row_6",
-        title: "어제 학습한 내용 정리",
-        isPublic: true,
-        order: 2,
-        type: "text"
-      },
-      {
-        id: "row_7",
-        title: "오늘의 어려운 점",
-        isPublic: true,
-        order: 3,
-        type: "question"
-      }
-    ],
-    createdAt: "2024-07-02T09:00:00Z"
-  }
-];
-const mockSheetEntries = [
-  {
-    id: "entry_1",
-    dailySheetId: "sheet_1",
-    rowId: "row_1",
-    userId: "student_1",
-    content: "8",
-    createdAt: "2024-07-01T10:00:00Z",
-    updatedAt: "2024-07-01T10:00:00Z"
-  },
-  {
-    id: "entry_2",
-    dailySheetId: "sheet_1",
-    rowId: "row_1",
-    userId: "student_2",
-    content: "7",
-    createdAt: "2024-07-01T10:01:00Z",
-    updatedAt: "2024-07-01T10:01:00Z"
-  },
-  {
-    id: "entry_3",
-    dailySheetId: "sheet_1",
-    rowId: "row_2",
-    userId: "student_1",
-    content: "React의 기초를 확실히 이해하기",
-    createdAt: "2024-07-01T10:05:00Z",
-    updatedAt: "2024-07-01T10:05:00Z"
-  }
-];
-const mockChatMessages = [
-  {
-    id: "msg_1",
-    classSpaceId: "class_1",
-    userId: "instructor_1",
-    content: "오늘 수업을 시작하겠습니다! 체크인 점수부터 입력해주세요.",
-    createdAt: "2024-07-01T09:30:00Z"
-  },
-  {
-    id: "msg_2",
-    classSpaceId: "class_1",
-    userId: "student_1",
-    content: "안녕하세요! 잘 부탁드립니다.",
-    createdAt: "2024-07-01T09:31:00Z"
-  },
-  {
-    id: "msg_3",
-    classSpaceId: "class_1",
-    userId: "student_2",
-    content: "체크인 점수 입력 완료했습니다!",
-    createdAt: "2024-07-01T09:35:00Z"
-  }
-];
 var AUTOFOCUS_ON_MOUNT = "focusScope.autoFocusOnMount";
 var AUTOFOCUS_ON_UNMOUNT = "focusScope.autoFocusOnUnmount";
 var EVENT_OPTIONS = { bubbles: false, cancelable: true };
