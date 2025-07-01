@@ -1,13 +1,19 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/hooks/useAuth';
-import { mockClassSpaces, mockDailySheets, mockUsers, mockSheetEntries, mockChatMessages } from '@/data/mockData';
-import { ArrowLeft, Plus, Eye, EyeOff, MessageSquare } from 'lucide-react';
-import { SheetTable } from '@/components/SheetTable';
-import { ChatPanel } from '@/components/ChatPanel';
-import { AddRowDialog } from '@/components/AddRowDialog';
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  mockClassSpaces,
+  mockDailySheets,
+  mockUsers,
+  mockSheetEntries,
+  mockChatMessages,
+} from "@/data/mockData";
+import { ArrowLeft, Plus, Eye, EyeOff, MessageSquare } from "lucide-react";
+import { SheetTable } from "@/components/SheetTable";
+import { ChatPanel } from "@/components/ChatPanel";
+import { AddRowDialog } from "@/components/AddRowDialog";
 
 export default function DailySheet() {
   const { classId, sheetId } = useParams();
@@ -15,9 +21,9 @@ export default function DailySheet() {
   const [addRowOpen, setAddRowOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(true);
 
-  const classSpace = mockClassSpaces.find(cs => cs.id === classId);
-  const dailySheet = mockDailySheets.find(ds => ds.id === sheetId);
-  
+  const classSpace = mockClassSpaces.find((cs) => cs.id === classId);
+  const dailySheet = mockDailySheets.find((ds) => ds.id === sheetId);
+
   if (!classSpace || !dailySheet) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -32,8 +38,8 @@ export default function DailySheet() {
   }
 
   const isInstructor = user?.id === classSpace.instructorId;
-  const students = mockUsers.filter(u => classSpace.students.includes(u.id));
-  const entries = mockSheetEntries.filter(e => e.dailySheetId === sheetId);
+  const students = mockUsers.filter((u) => classSpace.students.includes(u.id));
+  const entries = mockSheetEntries.filter((e) => e.dailySheetId === sheetId);
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,16 +57,14 @@ export default function DailySheet() {
             <div>
               <h1 className="text-2xl font-bold">{dailySheet.title}</h1>
               <p className="text-muted-foreground">
-                {classSpace.name} • {new Date(dailySheet.date).toLocaleDateString('ko-KR')}
+                {classSpace.name} •{" "}
+                {new Date(dailySheet.date).toLocaleDateString("ko-KR")}
               </p>
             </div>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                onClick={() => setChatOpen(!chatOpen)}
-              >
+              <Button variant="outline" onClick={() => setChatOpen(!chatOpen)}>
                 <MessageSquare className="w-4 h-4 mr-2" />
-                {chatOpen ? '채팅 숨기기' : '채팅 보기'}
+                {chatOpen ? "채팅 숨기기" : "채팅 보기"}
               </Button>
               {isInstructor && (
                 <Button onClick={() => setAddRowOpen(true)}>
@@ -74,9 +78,13 @@ export default function DailySheet() {
       </header>
 
       <main className="flex h-[calc(100vh-120px)]">
-        <div className={`flex-1 ${chatOpen ? 'pr-80' : ''} transition-all duration-300`}>
+        <div
+          className={`flex-1 ${
+            chatOpen ? "pr-80" : ""
+          } transition-all duration-300`}
+        >
           <div className="p-6 h-full overflow-auto">
-            <SheetTable 
+            <SheetTable
               dailySheet={dailySheet}
               students={students}
               entries={entries}
@@ -88,16 +96,18 @@ export default function DailySheet() {
 
         {chatOpen && (
           <div className="fixed right-0 top-[120px] w-80 h-[calc(100vh-120px)] border-l bg-white">
-            <ChatPanel 
+            <ChatPanel
               classSpaceId={classId!}
-              messages={mockChatMessages.filter(m => m.classSpaceId === classId)}
+              messages={mockChatMessages.filter(
+                (m) => m.classSpaceId === classId
+              )}
               currentUser={user}
             />
           </div>
         )}
       </main>
 
-      <AddRowDialog 
+      <AddRowDialog
         open={addRowOpen}
         onOpenChange={setAddRowOpen}
         dailySheetId={sheetId!}

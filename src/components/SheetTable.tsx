@@ -1,11 +1,17 @@
-
-import { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { DailySheet, User, SheetEntry } from '@/types';
-import { Eye, EyeOff, Edit, Save, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { DailySheet, User, SheetEntry } from "@/types";
+import { Eye, EyeOff, Edit, Save, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface SheetTableProps {
   dailySheet: DailySheet;
@@ -15,14 +21,20 @@ interface SheetTableProps {
   isInstructor: boolean;
 }
 
-export function SheetTable({ dailySheet, students, entries, currentUser, isInstructor }: SheetTableProps) {
+export function SheetTable({
+  dailySheet,
+  students,
+  entries,
+  currentUser,
+  isInstructor,
+}: SheetTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
-  const [editContent, setEditContent] = useState('');
+  const [editContent, setEditContent] = useState("");
   const { toast } = useToast();
 
   const getEntryContent = (rowId: string, userId: string) => {
-    const entry = entries.find(e => e.rowId === rowId && e.userId === userId);
-    return entry?.content || '';
+    const entry = entries.find((e) => e.rowId === rowId && e.userId === userId);
+    return entry?.content || "";
   };
 
   const handleEdit = (rowId: string, userId: string) => {
@@ -34,24 +46,24 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
 
   const handleSave = (rowId: string, userId: string) => {
     // 실제로는 여기서 API 호출
-    console.log('저장:', { rowId, userId, content: editContent });
-    
+    console.log("저장:", { rowId, userId, content: editContent });
+
     toast({
       title: "저장되었습니다",
       description: "내용이 성공적으로 저장되었습니다.",
     });
-    
+
     setEditingCell(null);
-    setEditContent('');
+    setEditContent("");
   };
 
   const handleCancel = () => {
     setEditingCell(null);
-    setEditContent('');
+    setEditContent("");
   };
 
-  const visibleRows = dailySheet.rows.filter(row => 
-    isInstructor || row.isPublic
+  const visibleRows = dailySheet.rows.filter(
+    (row) => isInstructor || row.isPublic
   );
 
   return (
@@ -61,21 +73,19 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
           <TableHeader>
             <TableRow>
               <TableHead className="w-48">주제</TableHead>
-              {students.map(student => (
+              {students.map((student) => (
                 <TableHead key={student.id} className="text-center min-w-48">
                   {student.name}
                 </TableHead>
               ))}
-              {isInstructor && (
-                <TableHead className="w-20">관리</TableHead>
-              )}
+              {isInstructor && <TableHead className="w-20">관리</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {visibleRows.map(row => {
-              const cellKey = editingCell?.split('-');
+            {visibleRows.map((row) => {
+              const cellKey = editingCell?.split("-");
               const isRowEditing = cellKey?.[0] === row.id;
-              
+
               return (
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">
@@ -86,19 +96,20 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
                       <span>{row.title}</span>
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
-                      {row.type === 'checkin' && '체크인'}
-                      {row.type === 'question' && '질문'}
-                      {row.type === 'discussion' && '토론'}
-                      {row.type === 'text' && '텍스트'}
+                      {row.type === "checkin" && "체크인"}
+                      {row.type === "question" && "질문"}
+                      {row.type === "discussion" && "토론"}
+                      {row.type === "text" && "텍스트"}
                     </div>
                   </TableCell>
-                  
-                  {students.map(student => {
+
+                  {students.map((student) => {
                     const cellKey = `${row.id}-${student.id}`;
                     const isEditing = editingCell === cellKey;
                     const content = getEntryContent(row.id, student.id);
-                    const canEdit = currentUser?.id === student.id && row.isPublic;
-                    
+                    const canEdit =
+                      currentUser?.id === student.id && row.isPublic;
+
                     return (
                       <TableCell key={student.id} className="align-top">
                         {isEditing ? (
@@ -110,15 +121,15 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
                               placeholder="내용을 입력하세요..."
                             />
                             <div className="flex gap-1">
-                              <Button 
-                                size="sm" 
+                              <Button
+                                size="sm"
                                 onClick={() => handleSave(row.id, student.id)}
                               >
                                 <Save className="w-3 h-3" />
                               </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={handleCancel}
                               >
                                 <X className="w-3 h-3" />
@@ -133,10 +144,12 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
                               </div>
                             ) : (
                               <div className="text-muted-foreground text-sm p-2 bg-muted/20 rounded dashed border-2 border-dashed">
-                                {row.isPublic ? '내용을 입력하세요' : '비공개 주제'}
+                                {row.isPublic
+                                  ? "내용을 입력하세요"
+                                  : "비공개 주제"}
                               </div>
                             )}
-                            
+
                             {canEdit && (
                               <Button
                                 size="sm"
@@ -152,7 +165,7 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
                       </TableCell>
                     );
                   })}
-                  
+
                   {isInstructor && (
                     <TableCell>
                       <Button
@@ -161,11 +174,17 @@ export function SheetTable({ dailySheet, students, entries, currentUser, isInstr
                         onClick={() => {
                           // 공개/비공개 토글 로직
                           toast({
-                            title: row.isPublic ? "주제를 비공개로 변경했습니다" : "주제를 공개로 변경했습니다",
+                            title: row.isPublic
+                              ? "주제를 비공개로 변경했습니다"
+                              : "주제를 공개로 변경했습니다",
                           });
                         }}
                       >
-                        {row.isPublic ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        {row.isPublic ? (
+                          <Eye className="w-4 h-4" />
+                        ) : (
+                          <EyeOff className="w-4 h-4" />
+                        )}
                       </Button>
                     </TableCell>
                   )}

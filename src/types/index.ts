@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   phone: string;
@@ -31,7 +30,7 @@ export interface SheetRow {
   title: string;
   isPublic: boolean;
   order: number;
-  type: 'text' | 'question' | 'discussion' | 'checkin';
+  type: "text" | "question" | "discussion" | "checkin";
 }
 
 export interface SheetEntry {

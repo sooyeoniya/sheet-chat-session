@@ -1,13 +1,18 @@
-
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/hooks/useAuth';
-import { mockClassSpaces, mockUsers } from '@/data/mockData';
-import { Plus, Users, Calendar, LogOut } from 'lucide-react';
-import { CreateClassSpaceDialog } from '@/components/CreateClassSpaceDialog';
-import { JoinClassSpaceDialog } from '@/components/JoinClassSpaceDialog';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useAuth } from "@/hooks/useAuth";
+import { mockClassSpaces, mockUsers } from "@/data/mockData";
+import { Plus, Users, Calendar, LogOut } from "lucide-react";
+import { CreateClassSpaceDialog } from "@/components/CreateClassSpaceDialog";
+import { JoinClassSpaceDialog } from "@/components/JoinClassSpaceDialog";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -17,17 +22,21 @@ export default function Dashboard() {
   if (!user) return null;
 
   // 내가 멘토인 수업과 수강생인 수업을 구분
-  const myInstructorClasses = mockClassSpaces.filter(cs => cs.instructorId === user.id);
-  const myStudentClasses = mockClassSpaces.filter(cs => cs.students.includes(user.id));
+  const myInstructorClasses = mockClassSpaces.filter(
+    (cs) => cs.instructorId === user.id
+  );
+  const myStudentClasses = mockClassSpaces.filter((cs) =>
+    cs.students.includes(user.id)
+  );
   const allMyClasses = [...myInstructorClasses, ...myStudentClasses];
 
   const getInstructorName = (instructorId: string) => {
-    const instructor = mockUsers.find(u => u.id === instructorId);
-    return instructor?.name || '알 수 없음';
+    const instructor = mockUsers.find((u) => u.id === instructorId);
+    return instructor?.name || "알 수 없음";
   };
 
   const getUserRole = (classSpace: any) => {
-    return classSpace.instructorId === user.id ? 'instructor' : 'student';
+    return classSpace.instructorId === user.id ? "instructor" : "student";
   };
 
   return (
@@ -36,9 +45,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">실시간 수업 플랫폼</h1>
-            <p className="text-muted-foreground">
-              안녕하세요, {user.name}님
-            </p>
+            <p className="text-muted-foreground">안녕하세요, {user.name}님</p>
           </div>
           <Button onClick={logout} variant="outline">
             <LogOut className="w-4 h-4 mr-2" />
@@ -66,23 +73,29 @@ export default function Dashboard() {
           {allMyClasses.map((classSpace) => {
             const userRole = getUserRole(classSpace);
             return (
-              <Card key={classSpace.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={classSpace.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     {classSpace.name}
                     <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        userRole === 'instructor' 
-                          ? 'bg-blue-100 text-blue-800' 
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {userRole === 'instructor' ? '멘토' : '수강생'}
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          userRole === "instructor"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        {userRole === "instructor" ? "멘토" : "수강생"}
                       </span>
                       <Users className="w-5 h-5 text-muted-foreground" />
                     </div>
                   </CardTitle>
                   <CardDescription>
-                    {userRole === 'student' && `멘토: ${getInstructorName(classSpace.instructorId)}`}
+                    {userRole === "student" &&
+                      `멘토: ${getInstructorName(classSpace.instructorId)}`}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -95,16 +108,17 @@ export default function Dashboard() {
                       <Users className="w-4 h-4 mr-2" />
                       수강생 {classSpace.students.length}명
                     </div>
-                    {userRole === 'instructor' && (
+                    {userRole === "instructor" && (
                       <div className="text-xs bg-muted p-2 rounded">
-                        초대 코드: <code className="font-mono">{classSpace.inviteCode}</code>
+                        초대 코드:{" "}
+                        <code className="font-mono">
+                          {classSpace.inviteCode}
+                        </code>
                       </div>
                     )}
                   </div>
                   <Link to={`/class/${classSpace.id}`}>
-                    <Button className="w-full">
-                      수업 공간 입장
-                    </Button>
+                    <Button className="w-full">수업 공간 입장</Button>
                   </Link>
                 </CardContent>
               </Card>
@@ -131,12 +145,12 @@ export default function Dashboard() {
         )}
       </main>
 
-      <CreateClassSpaceDialog 
-        open={createDialogOpen} 
+      <CreateClassSpaceDialog
+        open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
       />
-      <JoinClassSpaceDialog 
-        open={joinDialogOpen} 
+      <JoinClassSpaceDialog
+        open={joinDialogOpen}
         onOpenChange={setJoinDialogOpen}
       />
     </div>

@@ -1,6 +1,11 @@
-
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthState } from '@/types';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { User, AuthState } from "@/types";
 
 interface AuthContextType extends AuthState {
   login: (phone: string, name: string) => void;
@@ -21,13 +26,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       phone,
       name,
     };
-    
+
     setAuthState({
       user,
       isAuthenticated: true,
     });
-    
-    localStorage.setItem('auth', JSON.stringify(user));
+
+    localStorage.setItem("auth", JSON.stringify(user));
   };
 
   const logout = () => {
@@ -35,12 +40,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: null,
       isAuthenticated: false,
     });
-    localStorage.removeItem('auth');
+    localStorage.removeItem("auth");
   };
 
   // 페이지 로드 시 인증 상태 복원
   useEffect(() => {
-    const stored = localStorage.getItem('auth');
+    const stored = localStorage.getItem("auth");
     if (stored) {
       const user = JSON.parse(stored);
       setAuthState({
@@ -60,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

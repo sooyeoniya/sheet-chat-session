@@ -1,11 +1,10 @@
-
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChatMessage, User } from '@/types';
-import { Send } from 'lucide-react';
-import { mockUsers } from '@/data/mockData';
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChatMessage, User } from "@/types";
+import { Send } from "lucide-react";
+import { mockUsers } from "@/data/mockData";
 
 interface ChatPanelProps {
   classSpaceId: string;
@@ -13,28 +12,32 @@ interface ChatPanelProps {
   currentUser: User | null;
 }
 
-export function ChatPanel({ classSpaceId, messages, currentUser }: ChatPanelProps) {
-  const [newMessage, setNewMessage] = useState('');
+export function ChatPanel({
+  classSpaceId,
+  messages,
+  currentUser,
+}: ChatPanelProps) {
+  const [newMessage, setNewMessage] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newMessage.trim() || !currentUser) return;
 
     // 실제로는 여기서 API 호출
-    console.log('새 메시지:', {
+    console.log("새 메시지:", {
       classSpaceId,
       userId: currentUser.id,
       content: newMessage,
     });
 
-    setNewMessage('');
+    setNewMessage("");
   };
 
   const getUserName = (userId: string) => {
-    const user = mockUsers.find(u => u.id === userId);
-    return user?.name || '알 수 없음';
+    const user = mockUsers.find((u) => u.id === userId);
+    return user?.name || "알 수 없음";
   };
 
   const isMyMessage = (message: ChatMessage) => {
@@ -61,13 +64,15 @@ export function ChatPanel({ classSpaceId, messages, currentUser }: ChatPanelProp
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${isMyMessage(message) ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${
+                isMyMessage(message) ? "justify-end" : "justify-start"
+              }`}
             >
               <div
                 className={`max-w-[80%] rounded-lg p-3 ${
                   isMyMessage(message)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted"
                 }`}
               >
                 {!isMyMessage(message) && (
@@ -79,9 +84,9 @@ export function ChatPanel({ classSpaceId, messages, currentUser }: ChatPanelProp
                   {message.content}
                 </div>
                 <div className={`text-xs mt-1 opacity-70`}>
-                  {new Date(message.createdAt).toLocaleTimeString('ko-KR', {
-                    hour: '2-digit',
-                    minute: '2-digit',
+                  {new Date(message.createdAt).toLocaleTimeString("ko-KR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </div>
               </div>
