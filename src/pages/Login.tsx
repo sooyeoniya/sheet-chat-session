@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface LoginForm {
   phone: string;
@@ -19,6 +21,7 @@ interface LoginForm {
 
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
+  const [loginError, setLoginError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -30,7 +33,16 @@ export default function Login() {
   }
 
   const onSubmit = (data: LoginForm) => {
-    login(data.phone, data.name);
+    try {
+      setLoginError(null);
+      login(data.phone, data.name);
+    } catch (error) {
+      setLoginError(
+        error instanceof Error
+          ? error.message
+          : "로그인 중 오류가 발생했습니다."
+      );
+    }
   };
 
   return (
@@ -41,6 +53,11 @@ export default function Login() {
           <CardDescription>전화번호로 간편하게 로그인하세요</CardDescription>
         </CardHeader>
         <CardContent>
+          {loginError && (
+            <Alert className="mb-4" variant="destructive">
+              <AlertDescription>{loginError}</AlertDescription>
+            </Alert>
+          )}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="phone">전화번호</Label>

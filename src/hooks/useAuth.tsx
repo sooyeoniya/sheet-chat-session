@@ -5,7 +5,8 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { User, AuthState } from "@/types";
+import { AuthState } from "@/types";
+import { mockUsers } from "@/data/mockData";
 
 interface AuthContextType extends AuthState {
   login: (phone: string, name: string) => void;
@@ -21,18 +22,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const login = (phone: string, name: string) => {
-    const user: User = {
-      id: `user_${Date.now()}`,
-      phone,
-      name,
-    };
+    // 목데이터에서 전화번호로 사용자 찾기
+    const existingUser = mockUsers.find((user) => user.phone === phone);
+
+    if (!existingUser) {
+      // 목데이터에 없는 사용자면 에러 처리 또는 새 사용자 생성
+      throw new Error("등록되지 않은 사용자입니다.");
+    }
+
+    // 이름이 일치하는지 확인 (선택적)
+    if (existingUser.name !== name) {
+      throw new Error("이름이 일치하지 않습니다.");
+    }
 
     setAuthState({
-      user,
+      user: existingUser,
       isAuthenticated: true,
     });
 
-    localStorage.setItem("auth", JSON.stringify(user));
+    localStorage.setItem("auth", JSON.stringify(existingUser));
   };
 
   const logout = () => {
