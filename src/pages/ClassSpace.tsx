@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,7 @@ export default function ClassSpace() {
   }
 
   const instructor = mockUsers.find(u => u.id === classSpace.instructorId);
-  const isInstructor = user?.role === 'instructor' && user.id === classSpace.instructorId;
+  const isInstructor = user?.id === classSpace.instructorId;
 
   return (
     <div className="min-h-screen bg-background">

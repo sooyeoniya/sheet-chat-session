@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,7 @@ export default function DailySheet() {
     );
   }
 
-  const isInstructor = user?.role === 'instructor' && user.id === classSpace.instructorId;
+  const isInstructor = user?.id === classSpace.instructorId;
   const students = mockUsers.filter(u => classSpace.students.includes(u.id));
   const entries = mockSheetEntries.filter(e => e.dailySheetId === sheetId);
 
