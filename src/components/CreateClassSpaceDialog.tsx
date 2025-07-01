@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { mockClassSpaces } from '@/data/mockData';
 
 interface CreateClassSpaceForm {
   name: string;
@@ -20,10 +22,31 @@ interface CreateClassSpaceDialogProps {
 export function CreateClassSpaceDialog({ open, onOpenChange }: CreateClassSpaceDialogProps) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateClassSpaceForm>();
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  const generateInviteCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  };
 
   const onSubmit = (data: CreateClassSpaceForm) => {
-    // 실제로는 여기서 API 호출
-    console.log('새 수업 공간 생성:', data);
+    if (!user) return;
+
+    // 새로운 수업 공간 생성
+    const newClassSpace = {
+      id: `class_${Date.now()}`,
+      name: data.name,
+      instructorId: user.id,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      inviteCode: generateInviteCode(),
+      students: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    // mockData에 추가
+    mockClassSpaces.push(newClassSpace);
+    
+    console.log('새 수업 공간 생성:', newClassSpace);
     
     toast({
       title: "수업 공간이 생성되었습니다!",
@@ -32,6 +55,9 @@ export function CreateClassSpaceDialog({ open, onOpenChange }: CreateClassSpaceD
     
     reset();
     onOpenChange(false);
+    
+    // 페이지 새로고침으로 변경사항 반영
+    window.location.reload();
   };
 
   return (
