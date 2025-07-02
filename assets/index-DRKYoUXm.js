@@ -17632,6 +17632,68 @@ function useAuth() {
   }
   return context;
 }
+const DataContext = reactExports.createContext(void 0);
+function DataProvider({ children }) {
+  const [users] = reactExports.useState(mockUsers);
+  const [classSpaces] = reactExports.useState(mockClassSpaces);
+  const [dailySheets] = reactExports.useState(mockDailySheets);
+  const [sheetEntries, setSheetEntries] = reactExports.useState(mockSheetEntries);
+  const [chatMessages, setChatMessages] = reactExports.useState(mockChatMessages);
+  const addChatMessage = (messageData) => {
+    const newMessage = {
+      ...messageData,
+      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      createdAt: (/* @__PURE__ */ new Date()).toISOString()
+    };
+    setChatMessages((prev) => [...prev, newMessage]);
+  };
+  const updateSheetEntry = (entryData) => {
+    const existingEntryIndex = sheetEntries.findIndex(
+      (entry) => entry.dailySheetId === entryData.dailySheetId && entry.rowId === entryData.rowId && entry.userId === entryData.userId
+    );
+    if (existingEntryIndex >= 0) {
+      setSheetEntries(
+        (prev) => prev.map(
+          (entry, index2) => index2 === existingEntryIndex ? {
+            ...entry,
+            content: entryData.content,
+            updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+          } : entry
+        )
+      );
+    } else {
+      const newEntry = {
+        ...entryData,
+        id: `entry_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      setSheetEntries((prev) => [...prev, newEntry]);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    DataContext.Provider,
+    {
+      value: {
+        users,
+        classSpaces,
+        dailySheets,
+        sheetEntries,
+        chatMessages,
+        addChatMessage,
+        updateSheetEntry
+      },
+      children
+    }
+  );
+}
+function useData() {
+  const context = reactExports.useContext(DataContext);
+  if (context === void 0) {
+    throw new Error("useData must be used within a DataProvider");
+  }
+  return context;
+}
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
@@ -20897,18 +20959,19 @@ function JoinClassSpaceDialog({
 }
 function Dashboard() {
   const { user, logout } = useAuth();
+  const { classSpaces, users } = useData();
   const [createDialogOpen, setCreateDialogOpen] = reactExports.useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = reactExports.useState(false);
   if (!user) return null;
-  const myInstructorClasses = mockClassSpaces.filter(
+  const myInstructorClasses = classSpaces.filter(
     (cs) => cs.instructorId === user.id
   );
-  const myStudentClasses = mockClassSpaces.filter(
+  const myStudentClasses = classSpaces.filter(
     (cs) => cs.students.includes(user.id)
   );
   const allMyClasses = [...myInstructorClasses, ...myStudentClasses];
   const getInstructorName = (instructorId) => {
-    const instructor = mockUsers.find((u2) => u2.id === instructorId);
+    const instructor = users.find((u2) => u2.id === instructorId);
     return (instructor == null ? void 0 : instructor.name) || "알 수 없음";
   };
   const getUserRole = (classSpace) => {
@@ -21092,9 +21155,10 @@ function CreateDailySheetDialog({
 function ClassSpace() {
   const { classId } = useParams();
   const { user } = useAuth();
+  const { classSpaces, dailySheets, users } = useData();
   const [createSheetOpen, setCreateSheetOpen] = reactExports.useState(false);
-  const classSpace = mockClassSpaces.find((cs) => cs.id === classId);
-  const dailySheets = mockDailySheets.filter(
+  const classSpace = classSpaces.find((cs) => cs.id === classId);
+  dailySheets.filter(
     (ds) => ds.classSpaceId === classId
   );
   if (!classSpace) {
@@ -21103,7 +21167,7 @@ function ClassSpace() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: "/dashboard", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { children: "대시보드로 돌아가기" }) })
     ] }) });
   }
-  const instructor = mockUsers.find((u2) => u2.id === classSpace.instructorId);
+  const instructor = users.find((u2) => u2.id === classSpace.instructorId);
   const isInstructor = (user == null ? void 0 : user.id) === classSpace.instructorId;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-background", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "border-b bg-white", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "container mx-auto px-4 py-4", children: [
@@ -21184,9 +21248,7 @@ function ClassSpace() {
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-medium mb-2", children: "참여 학생" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: classSpace.students.map((studentId) => {
-              const student = mockUsers.find(
-                (u2) => u2.id === studentId
-              );
+              const student = users.find((u2) => u2.id === studentId);
               return student ? /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "div",
                 {
@@ -21315,6 +21377,7 @@ function SheetTable({
   const [editingCell, setEditingCell] = reactExports.useState(null);
   const [editContent, setEditContent] = reactExports.useState("");
   const { toast: toast2 } = useToast();
+  const { updateSheetEntry, addChatMessage } = useData();
   const getEntryContent = (rowId, userId) => {
     const entry = entries.find((e) => e.rowId === rowId && e.userId === userId);
     return (entry == null ? void 0 : entry.content) || "";
@@ -21326,7 +21389,18 @@ function SheetTable({
     setEditContent(content);
   };
   const handleSave = (rowId, userId) => {
-    console.log("저장:", { rowId, userId, content: editContent });
+    var _a2, _b2;
+    updateSheetEntry({
+      dailySheetId: dailySheet.id,
+      rowId,
+      userId,
+      content: editContent
+    });
+    addChatMessage({
+      classSpaceId: dailySheet.classSpaceId,
+      userId,
+      content: `${(_a2 = students.find((s) => s.id === userId)) == null ? void 0 : _a2.name}님이 "${(_b2 = dailySheet.rows.find((r2) => r2.id === rowId)) == null ? void 0 : _b2.title}"에 답변했습니다: ${editContent}`
+    });
     toast2({
       title: "저장되었습니다",
       description: "내용이 성공적으로 저장되었습니다."
@@ -21423,7 +21497,8 @@ function SheetTable({
             },
             children: row.isPublic ? /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-4 h-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { className: "w-4 h-4" })
           }
-        ) })
+        ) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", children: "삭제" }) })
       ] }, row.id);
     }) })
   ] }) }) });
@@ -22213,10 +22288,11 @@ function ChatPanel({
 }) {
   const [newMessage, setNewMessage] = reactExports.useState("");
   const scrollRef = reactExports.useRef(null);
+  const { users, addChatMessage } = useData();
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !currentUser) return;
-    console.log("새 메시지:", {
+    addChatMessage({
       classSpaceId,
       userId: currentUser.id,
       content: newMessage
@@ -22224,7 +22300,7 @@ function ChatPanel({
     setNewMessage("");
   };
   const getUserName = (userId) => {
-    const user = mockUsers.find((u2) => u2.id === userId);
+    const user = users.find((u2) => u2.id === userId);
     return (user == null ? void 0 : user.name) || "알 수 없음";
   };
   const isMyMessage = (message) => {
@@ -24105,10 +24181,11 @@ function AddRowDialog({
 function DailySheet() {
   const { classId, sheetId } = useParams();
   const { user } = useAuth();
+  const { classSpaces, dailySheets, users, sheetEntries, chatMessages } = useData();
   const [addRowOpen, setAddRowOpen] = reactExports.useState(false);
   const [chatOpen, setChatOpen] = reactExports.useState(true);
-  const classSpace = mockClassSpaces.find((cs) => cs.id === classId);
-  const dailySheet = mockDailySheets.find((ds) => ds.id === sheetId);
+  const classSpace = classSpaces.find((cs) => cs.id === classId);
+  const dailySheet = dailySheets.find((ds) => ds.id === sheetId);
   if (!classSpace || !dailySheet) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold mb-4", children: "시트를 찾을 수 없습니다" }),
@@ -24116,8 +24193,8 @@ function DailySheet() {
     ] }) });
   }
   const isInstructor = (user == null ? void 0 : user.id) === classSpace.instructorId;
-  const students = mockUsers.filter((u2) => classSpace.students.includes(u2.id));
-  const entries = mockSheetEntries.filter((e) => e.dailySheetId === sheetId);
+  const students = users.filter((u2) => classSpace.students.includes(u2.id));
+  const entries = sheetEntries.filter((e) => e.dailySheetId === sheetId);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-background", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "border-b bg-white", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "container mx-auto px-4 py-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-4 mb-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/class/${classId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", size: "sm", children: [
@@ -24167,9 +24244,7 @@ function DailySheet() {
         ChatPanel,
         {
           classSpaceId: classId,
-          messages: mockChatMessages.filter(
-            (m2) => m2.classSpaceId === classId
-          ),
+          messages: chatMessages.filter((m2) => m2.classSpaceId === classId),
           currentUser: user
         }
       ) })
@@ -24199,7 +24274,7 @@ const NotFound = () => {
   ] }) });
 };
 const queryClient = new QueryClient();
-const App = () => /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(AuthProvider, { children: [
+const App = () => /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AuthProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DataProvider, { children: [
   /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster$1, {}),
   /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, {}),
   /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { basename: "/sheet-chat-session/", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
@@ -24234,5 +24309,5 @@ const App = () => /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { c
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(NotFound, {}) })
   ] }) })
-] }) }) });
+] }) }) }) });
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsxRuntimeExports.jsx(App, {}));
