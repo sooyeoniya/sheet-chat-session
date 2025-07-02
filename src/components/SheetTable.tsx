@@ -183,30 +183,32 @@ export function SheetTable({
                   })}
 
                   {isInstructor && (
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          // 공개/비공개 토글 로직
-                          toast({
-                            title: row.isPublic
-                              ? "주제를 비공개로 변경했습니다"
-                              : "주제를 공개로 변경했습니다",
-                          });
-                        }}
-                      >
-                        {row.isPublic ? (
-                          <Eye className="w-4 h-4" />
-                        ) : (
-                          <EyeOff className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </TableCell>
+                    <>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            // 공개/비공개 토글 로직
+                            toast({
+                              title: row.isPublic
+                                ? "주제를 비공개로 변경했습니다"
+                                : "주제를 공개로 변경했습니다",
+                            });
+                          }}
+                        >
+                          {row.isPublic ? (
+                            <Eye className="w-4 h-4" />
+                          ) : (
+                            <EyeOff className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button size="sm">삭제</Button>
+                      </TableCell>
+                    </>
                   )}
-                  <TableCell>
-                    <Button size="sm">삭제</Button>
-                  </TableCell>
                 </TableRow>
               );
             })}
