@@ -21485,20 +21485,22 @@ function SheetTable({
             )
           ] }) }, student.id);
         }),
-        isInstructor && /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Button,
-          {
-            size: "sm",
-            variant: "ghost",
-            onClick: () => {
-              toast2({
-                title: row.isPublic ? "주제를 비공개로 변경했습니다" : "주제를 공개로 변경했습니다"
-              });
-            },
-            children: row.isPublic ? /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-4 h-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { className: "w-4 h-4" })
-          }
-        ) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", children: "삭제" }) })
+        isInstructor && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Button,
+            {
+              size: "sm",
+              variant: "ghost",
+              onClick: () => {
+                toast2({
+                  title: row.isPublic ? "주제를 비공개로 변경했습니다" : "주제를 공개로 변경했습니다"
+                });
+              },
+              children: row.isPublic ? /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-4 h-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { className: "w-4 h-4" })
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", children: "삭제" }) })
+        ] })
       ] }, row.id);
     }) })
   ] }) }) });
