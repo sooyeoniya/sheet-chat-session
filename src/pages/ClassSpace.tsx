@@ -9,17 +9,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
-import { mockClassSpaces, mockDailySheets, mockUsers } from "@/data/mockData";
+import { useData } from "@/hooks/useData";
 import { ArrowLeft, Calendar, Plus, MessageSquare } from "lucide-react";
 import { CreateDailySheetDialog } from "@/components/CreateDailySheetDialog";
 
 export default function ClassSpace() {
   const { classId } = useParams();
   const { user } = useAuth();
+  const { classSpaces, dailySheets, users } = useData();
   const [createSheetOpen, setCreateSheetOpen] = useState(false);
 
-  const classSpace = mockClassSpaces.find((cs) => cs.id === classId);
-  const dailySheets = mockDailySheets.filter(
+  const classSpace = classSpaces.find((cs) => cs.id === classId);
+  const classDailySheets = dailySheets.filter(
     (ds) => ds.classSpaceId === classId
   );
 
@@ -36,7 +37,7 @@ export default function ClassSpace() {
     );
   }
 
-  const instructor = mockUsers.find((u) => u.id === classSpace.instructorId);
+  const instructor = users.find((u) => u.id === classSpace.instructorId);
   const isInstructor = user?.id === classSpace.instructorId;
 
   return (
@@ -143,9 +144,7 @@ export default function ClassSpace() {
                     <h4 className="font-medium mb-2">참여 학생</h4>
                     <div className="space-y-1">
                       {classSpace.students.map((studentId) => {
-                        const student = mockUsers.find(
-                          (u) => u.id === studentId
-                        );
+                        const student = users.find((u) => u.id === studentId);
                         return student ? (
                           <div
                             key={studentId}

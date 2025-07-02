@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { DailySheet, User, SheetEntry } from "@/types";
 import { Eye, EyeOff, Edit, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
+import { useData } from "@/hooks/useData";
 
 interface SheetTableProps {
   dailySheet: DailySheet;
@@ -31,6 +32,7 @@ export function SheetTable({
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
   const { toast } = useToast();
+  const { updateSheetEntry, addChatMessage } = useData();
 
   const getEntryContent = (rowId: string, userId: string) => {
     const entry = entries.find((e) => e.rowId === rowId && e.userId === userId);
@@ -45,8 +47,22 @@ export function SheetTable({
   };
 
   const handleSave = (rowId: string, userId: string) => {
-    // 실제로는 여기서 API 호출
-    console.log("저장:", { rowId, userId, content: editContent });
+    // 시트 엔트리 업데이트
+    updateSheetEntry({
+      dailySheetId: dailySheet.id,
+      rowId,
+      userId,
+      content: editContent,
+    });
+
+    // 채팅 메시지 추가 (선택적)
+    addChatMessage({
+      classSpaceId: dailySheet.classSpaceId,
+      userId,
+      content: `${students.find((s) => s.id === userId)?.name}님이 "${
+        dailySheet.rows.find((r) => r.id === rowId)?.title
+      }"에 답변했습니다: ${editContent}`,
+    });
 
     toast({
       title: "저장되었습니다",

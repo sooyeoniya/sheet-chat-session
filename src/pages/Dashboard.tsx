@@ -9,33 +9,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
-import { mockClassSpaces, mockUsers } from "@/data/mockData";
+import { useData } from "@/hooks/useData";
 import { Plus, Users, Calendar, LogOut } from "lucide-react";
 import { CreateClassSpaceDialog } from "@/components/CreateClassSpaceDialog";
 import { JoinClassSpaceDialog } from "@/components/JoinClassSpaceDialog";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const { classSpaces, users } = useData();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = useState(false);
 
   if (!user) return null;
 
   // 내가 멘토인 수업과 수강생인 수업을 구분
-  const myInstructorClasses = mockClassSpaces.filter(
+  const myInstructorClasses = classSpaces.filter(
     (cs) => cs.instructorId === user.id
   );
-  const myStudentClasses = mockClassSpaces.filter((cs) =>
+  const myStudentClasses = classSpaces.filter((cs) =>
     cs.students.includes(user.id)
   );
   const allMyClasses = [...myInstructorClasses, ...myStudentClasses];
 
   const getInstructorName = (instructorId: string) => {
-    const instructor = mockUsers.find((u) => u.id === instructorId);
+    const instructor = users.find((u) => u.id === instructorId);
     return instructor?.name || "알 수 없음";
   };
 
-  const getUserRole = (classSpace: any) => {
+  const getUserRole = (classSpace: { instructorId: string }) => {
     return classSpace.instructorId === user.id ? "instructor" : "student";
   };
 

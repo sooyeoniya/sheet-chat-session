@@ -1,16 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  mockClassSpaces,
-  mockDailySheets,
-  mockUsers,
-  mockSheetEntries,
-  mockChatMessages,
-} from "@/data/mockData";
-import { ArrowLeft, Plus, Eye, EyeOff, MessageSquare } from "lucide-react";
+import { useData } from "@/hooks/useData";
+import { ArrowLeft, Plus, MessageSquare } from "lucide-react";
 import { SheetTable } from "@/components/SheetTable";
 import { ChatPanel } from "@/components/ChatPanel";
 import { AddRowDialog } from "@/components/AddRowDialog";
@@ -18,11 +11,13 @@ import { AddRowDialog } from "@/components/AddRowDialog";
 export default function DailySheet() {
   const { classId, sheetId } = useParams();
   const { user } = useAuth();
+  const { classSpaces, dailySheets, users, sheetEntries, chatMessages } =
+    useData();
   const [addRowOpen, setAddRowOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(true);
 
-  const classSpace = mockClassSpaces.find((cs) => cs.id === classId);
-  const dailySheet = mockDailySheets.find((ds) => ds.id === sheetId);
+  const classSpace = classSpaces.find((cs) => cs.id === classId);
+  const dailySheet = dailySheets.find((ds) => ds.id === sheetId);
 
   if (!classSpace || !dailySheet) {
     return (
@@ -38,8 +33,8 @@ export default function DailySheet() {
   }
 
   const isInstructor = user?.id === classSpace.instructorId;
-  const students = mockUsers.filter((u) => classSpace.students.includes(u.id));
-  const entries = mockSheetEntries.filter((e) => e.dailySheetId === sheetId);
+  const students = users.filter((u) => classSpace.students.includes(u.id));
+  const entries = sheetEntries.filter((e) => e.dailySheetId === sheetId);
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,9 +93,7 @@ export default function DailySheet() {
           <div className="fixed right-0 top-[120px] w-80 h-[calc(100vh-120px)] border-l bg-white">
             <ChatPanel
               classSpaceId={classId!}
-              messages={mockChatMessages.filter(
-                (m) => m.classSpaceId === classId
-              )}
+              messages={chatMessages.filter((m) => m.classSpaceId === classId)}
               currentUser={user}
             />
           </div>

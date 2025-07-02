@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage, User } from "@/types";
 import { Send } from "lucide-react";
-import { mockUsers } from "@/data/mockData";
+import { useData } from "@/hooks/useData";
 
 interface ChatPanelProps {
   classSpaceId: string;
@@ -19,14 +19,15 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const [newMessage, setNewMessage] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { users, addChatMessage } = useData();
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!newMessage.trim() || !currentUser) return;
 
-    // 실제로는 여기서 API 호출
-    console.log("새 메시지:", {
+    // 채팅 메시지 추가
+    addChatMessage({
       classSpaceId,
       userId: currentUser.id,
       content: newMessage,
@@ -36,7 +37,7 @@ export function ChatPanel({
   };
 
   const getUserName = (userId: string) => {
-    const user = mockUsers.find((u) => u.id === userId);
+    const user = users.find((u) => u.id === userId);
     return user?.name || "알 수 없음";
   };
 

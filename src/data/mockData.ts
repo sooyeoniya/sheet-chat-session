@@ -1,11 +1,4 @@
-import {
-  ClassSpace,
-  DailySheet,
-  SheetRow,
-  SheetEntry,
-  ChatMessage,
-  User,
-} from "@/types";
+import { ClassSpace, DailySheet, SheetEntry, ChatMessage, User } from "@/types";
 
 export const mockUsers: User[] = [
   {
