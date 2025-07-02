@@ -188,6 +188,9 @@ export function SheetTable({
                       </Button>
                     </TableCell>
                   )}
+                  <TableCell>
+                    <Button size="sm">삭제</Button>
+                  </TableCell>
                 </TableRow>
               );
             })}
